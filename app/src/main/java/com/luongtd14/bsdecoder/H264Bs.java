@@ -130,8 +130,7 @@ public class H264Bs {
                     inputBuffer.clear();
                     inputBuffer.put(nal);
 //                    Log.e("luongtd146", "in: " + (cntIn++) + " " + pts);
-                    decoder.queueInputBuffer(inputIndex, 0, nal.length, pts, 0);
-                    pts += 33333;
+                    decoder.queueInputBuffer(inputIndex, 0, nal.length, 0, 0);
                 }
             }
 
@@ -149,6 +148,8 @@ public class H264Bs {
         while (true) {
             int outputIndex = decoder.dequeueOutputBuffer(bufferInfo, 10000);
             if (outputIndex >= 0) {
+                bufferInfo.presentationTimeUs = pts;
+                pts += 1_000_000 / 3;
                 Log.e("luongtd146", "out: " + (cntOut++) + " " + bufferInfo.presentationTimeUs);
                 decoder.releaseOutputBuffer(outputIndex, true);
 
